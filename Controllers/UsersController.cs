@@ -1,6 +1,7 @@
 using EcomReactCsharp.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Data.SqlClient;
+
 
 namespace EcomReactCsharp.Controllers{
 
@@ -21,7 +22,8 @@ namespace EcomReactCsharp.Controllers{
 
         public Response register(Users users){
             Response response = new Response();
-            SQLConnection
+           
+            SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("EComCS").ToString());
             return response;
         }
     }
