@@ -1,5 +1,5 @@
 using EcomReactCsharp.Models;
-using Microsoft.Extensions.Configuration;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
@@ -42,6 +42,18 @@ namespace EcomReactCsharp.Controllers
             response = dal.Login(users, connection);
             return response;
         }
+
+        [HttpPost]
+        [Route("viewUser")]
+        public Response viewUser(Users users)
+        {
+            Response response = new Response();
+            DAL dal = new DAL();
+            SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("EComCS").ToString());
+            response = dal.viewUser(users, connection);
+            return response;
+        }
+
     }
 
 }
