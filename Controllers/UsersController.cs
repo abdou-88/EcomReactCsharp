@@ -54,6 +54,20 @@ namespace EcomReactCsharp.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("updateProfile")]
+        public Response updateProfile(Users users)
+        {
+            Response response = new Response();
+            DAL dal = new DAL();
+            SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("EComCS").ToString());
+            response = dal.updateProfile(users, connection);
+            return response;
+        }
+
+
+
+
     }
 
 }
