@@ -5,7 +5,7 @@ namespace EcomReactCsharp.Models
 {
     public class DAL
     {
-        public Response register(Users users, SqlConnection connection)
+        public Response Register(Users users, SqlConnection connection)
         {
             Response response = new Response();
             SqlCommand cmd = new SqlCommand("sp_register", connection);
@@ -73,7 +73,7 @@ namespace EcomReactCsharp.Models
         }
 
 
-        public Response viewUser(Users users, SqlConnection connection)
+        public Response ViewUser(Users users, SqlConnection connection)
         {
             Response response = new Response();
             SqlDataAdapter da = new SqlDataAdapter("p_viewUser", connection);
@@ -110,7 +110,7 @@ namespace EcomReactCsharp.Models
         }
 
 
-        public Response updateProfile(Users users, SqlConnection connection)
+        public Response UpdateProfile(Users users, SqlConnection connection)
         {
             Response response = new Response();
             SqlCommand cmd = new SqlCommand("sp_register", connection);
@@ -143,7 +143,7 @@ namespace EcomReactCsharp.Models
 
 
 
-        public Response addToCart(Cart cart, SqlConnection connection)
+        public Response AddToCart(Cart cart, SqlConnection connection)
         {
             Response response = new Response();
             SqlCommand cmd = new SqlCommand("sp_addToCart", connection);
@@ -178,7 +178,7 @@ namespace EcomReactCsharp.Models
 
 
 
-        public Response placeOrder(Users users, SqlConnection connection)
+        public Response PlaceOrder(Users users, SqlConnection connection)
         {
             Response response = new Response();
             SqlCommand cmd = new SqlCommand("sp_placeOrder", connection);
@@ -208,7 +208,7 @@ namespace EcomReactCsharp.Models
         }
 
 
-        public Response orderList(Users users, SqlConnection connection)
+        public Response OrderList(Users users, SqlConnection connection)
         {
             Response response = new Response();
 
@@ -218,32 +218,145 @@ namespace EcomReactCsharp.Models
             da.SelectCommand.Parameters.AddWithValue("@Type", users.Type);
             da.SelectCommand.Parameters.AddWithValue("@ID", users.ID);
 
+            List<Orders> listOrder = new List<Orders>();
             DataTable dt = new DataTable();
             da.Fill(dt);
            
-            Users user = new Users();
-
+           
             if (dt.Rows.Count > 0)
             {
+                for(int i=0; i< dt.Rows.Count; i++)
+                {
+                    Orders order = new Orders();
+                    order.ID = Convert.ToInt32(dt.Rows[i]["ID"]);
+                    order.OrderNo = Convert.ToString(dt.Rows[i]["OrderNo"]);
+                    order.OrderTotal = Convert.ToDecimal(dt.Rows[i]["OrderTotal"]);
+                    order.OrderStatus = Convert.ToString(dt.Rows[i]["OrderStatus"]);
 
-                user.ID = Convert.ToInt32(dt.Rows[0]["ID"]);
-                user.FirstName = Convert.ToString(dt.Rows[0]["FirstName"]);
-                user.LastName = Convert.ToString(dt.Rows[0]["LastName"]);
-                user.Email = Convert.ToString(dt.Rows[0]["Email"]);
-                user.Type = Convert.ToString(dt.Rows[0]["Type"]);
+                    listOrder.Add(order);
+                }
+              
 
+                if(listOrder.Count>0){
+                    response.StatusCode = 200;
+                    response.StatusMessage = "Order detaisls fetched";
+                    response.listOrders = listOrder;
+                }
+                else
+                {
+                    response.StatusCode = 100;
+                    response.StatusMessage = "Order details not available";
+                    response.listOrders = null;
+                }
+                
 
-                response.StatusCode = 200;
-                response.StatusMessage = "User is valid";
-
-                response.user = user;
+                
             }
             else
             {
                 response.StatusCode = 100;
-                response.StatusMessage = "User is not valid";
-                response.user = null;
+                response.StatusMessage = "Order details not available";
+                response.listOrders = null;
             }
+
+
+            return response;
+        }
+
+
+        public Response AddUpdateMedicine(Medicines medicines, SqlConnection connection)
+        {
+            Response response = new Response();
+            SqlCommand cmd = new SqlCommand("sp_addUpdateMedicine", connection);
+
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@Name", medicines.Name);
+            cmd.Parameters.AddWithValue("@Manufacturer", medicines.Manufacturer);
+            cmd.Parameters.AddWithValue("@UnitPrice", medicines.UnitPrice);
+            cmd.Parameters.AddWithValue("@Discount", medicines.Discount);
+            cmd.Parameters.AddWithValue("@Quantity", medicines.Quantity);
+            cmd.Parameters.AddWithValue("@ExpDate", medicines.ExpDate);
+            cmd.Parameters.AddWithValue("@ImageUrl", medicines.ImageUrl);
+            cmd.Parameters.AddWithValue("@Status", medicines.Status);
+            cmd.Parameters.AddWithValue("@Type", medicines.Type);
+
+
+
+            connection.Open();
+            int i = cmd.ExecuteNonQuery();
+            connection.Close();
+
+            if (i > 0)
+            {
+                response.StatusCode = 200;
+                response.StatusMessage = "Medicine inserted successfully";
+
+            }
+            else
+            {
+                response.StatusCode = 100;
+                response.StatusMessage = "Medicine did not save, try again";
+
+            }
+
+            return response;
+        }
+
+        public Response UserList(SqlConnection connection)
+        {
+            Response response = new Response();
+
+
+            SqlDataAdapter da = new SqlDataAdapter("sp_UserList", connection);
+            da.SelectCommand.CommandType = CommandType.StoredProcedure;
+          
+
+            List<Users> listUsers = new List<Users>();
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+
+
+            if (dt.Rows.Count > 0)
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    Users user = new Users();
+                    user.ID = Convert.ToInt32(dt.Rows[i]["ID"]);
+                    user.FirstName = Convert.ToString(dt.Rows[0]["FirstName"]);
+                    user.LastName = Convert.ToString(dt.Rows[0]["LastName"]);
+                    user.Email = Convert.ToString(dt.Rows[0]["Email"]);
+                    user.Type = Convert.ToString(dt.Rows[0]["Type"]);
+                    user.Fund = Convert.ToDecimal(dt.Rows[0]["Fund"]);
+                    user.CreatedOn = Convert.ToDateTime(dt.Rows[0]["CreatedOn"]);
+                   
+                    listUsers.Add(user);
+                }
+
+
+                if (listUsers.Count > 0)
+                {
+                    response.StatusCode = 200;
+                    response.StatusMessage = "Users detaisls fetched";
+                    response.listUsers = listUsers;
+                }
+                else
+                {
+                    response.StatusCode = 100;
+                    response.StatusMessage = "Users details not available";
+                    response.listUsers = null;
+                }
+
+
+
+            }
+            else
+            {
+                response.StatusCode = 100;
+                response.StatusMessage = "Users details not available";
+                response.listUsers = null;
+            }
+
 
             return response;
         }

@@ -23,18 +23,18 @@ namespace EcomReactCsharp.Controllers
         [HttpPost]
         [Route("registration")]
 
-        public Response register(Users users)
+        public Response Register(Users users)
         {
             Response response = new Response();
             DAL dal = new DAL();
             SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("EComCS").ToString());
-            response = dal.register(users, connection);
+            response = dal.Register(users, connection);
             return response;
         }
 
         [HttpPost]
         [Route("login")]
-        public Response login(Users users)
+        public Response Login(Users users)
         {
             Response response = new Response();
             DAL dal = new DAL();
@@ -45,23 +45,23 @@ namespace EcomReactCsharp.Controllers
 
         [HttpPost]
         [Route("viewUser")]
-        public Response viewUser(Users users)
+        public Response ViewUser(Users users)
         {
             Response response = new Response();
             DAL dal = new DAL();
             SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("EComCS").ToString());
-            response = dal.viewUser(users, connection);
+            response = dal.ViewUser(users, connection);
             return response;
         }
 
         [HttpPost]
         [Route("updateProfile")]
-        public Response updateProfile(Users users)
+        public Response UpdateProfile(Users users)
         {
             Response response = new Response();
             DAL dal = new DAL();
             SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("EComCS").ToString());
-            response = dal.updateProfile(users, connection);
+            response = dal.UpdateProfile(users, connection);
             return response;
         }
 

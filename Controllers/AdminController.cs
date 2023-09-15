@@ -11,49 +11,36 @@ namespace EcomReactCsharp.Controllers
     [ApiController]
     [Route("api/[controller]")]
 
-    public class MedicinesController : ControllerBase
+    public class AdminController : ControllerBase
     {
         private readonly IConfiguration _configuration;
 
-        public MedicinesController(IConfiguration configuration)
+        public AdminController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
         [HttpPost]
-        [Route("addToCart")]
-
-        public Response AddToCart(Cart cart)
+        [Route("addUpdateMedicine")]
+        public Response AddUpdateMedicine(Medicines medicines)
         {
             Response response = new Response();
             DAL dal = new DAL();
             SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("EComCS").ToString());
-            response = dal.AddToCart(cart, connection);
+            response = dal.AddUpdateMedicine(medicines, connection);
             return response;
         }
 
-        [HttpPost]
-        [Route("placeOrder")]
-        public Response PlaceOrder(Users users)
+        [HttpGet]
+        [Route("userList")]
+        public Response UserList()
         {
             Response response = new Response();
             DAL dal = new DAL();
             SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("EComCS").ToString());
-            response = dal.PlaceOrder(users, connection);
+            response = dal.UserList( connection);
             return response;
         }
-
-        [HttpPost]
-        [Route("orderList")]
-        public Response OrderList(Users users)
-        {
-            Response response = new Response();
-            DAL dal = new DAL();
-            SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("EComCS").ToString());
-            response = dal.OrderList(users, connection);
-            return response;
-        }
-
 
 
 
